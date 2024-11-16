@@ -15,9 +15,24 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call(RolePermissionSeeder::class);
+
+        $admin = User::factory()->create([
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
         ]);
+        $admin->assignRole('admin');
+
+        $employee = User::factory()->create([
+            'name' => 'Employee User',
+            'email' => 'employee@example.com',
+        ]);
+        $employee->assignRole('employee');
+
+        $user = User::factory()->create([
+            'name' => 'Regular User',
+            'email' => 'user@example.com',
+        ]);
+        $user->assignRole('user');
     }
 }

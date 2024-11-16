@@ -24,17 +24,20 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            // Vérifier si la permission existe déjà
+            if (!Permission::where('name', $permission)->exists()) {
+                Permission::create(['name' => $permission]);
+            }
         }
 
         // Créer les rôles et leur assigner des permissions
-        $adminRole = Role::create(['name' => 'admin']);
-        $adminRole->givePermissionTo(Permission::all());
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $adminRole->syncPermissions(Permission::all());
 
-        $employeeRole = Role::create(['name' => 'employee']);
-        $employeeRole->givePermissionTo(['view inventory', 'create orders', 'view orders']);
+        $employeeRole = Role::firstOrCreate(['name' => 'employee']);
+        $employeeRole->syncPermissions(['view inventory', 'create orders', 'view orders']);
 
-        $userRole = Role::create(['name' => 'user']);
-        $userRole->givePermissionTo(['view inventory', 'view orders']);
+        $userRole = Role::firstOrCreate(['name' => 'user']);
+        $userRole->syncPermissions(['view inventory', 'view orders']);
     }
 }
